@@ -7,6 +7,7 @@
   <style>
     :root {
       --highlight: #4b7bec;
+      --vh: 1vh;
     }
     * {
       margin: 0;
@@ -22,7 +23,8 @@
     video#bgVideo {
       position: fixed;
       top: 0; left: 0;
-      width: 100vw; height: 100vh;
+      width: 100vw; 
+      height: 100vh;
       object-fit: cover;
       z-index: -1;
       filter: brightness(0.75);
@@ -31,94 +33,309 @@
       position: absolute;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      width: 90%; max-width: 520px;
-      padding: 40px 35px;
-      border-radius: 25px;
+      width: clamp(300px, 92vw, 520px);
+      max-height: 85vh;
+      padding: clamp(20px, 4vw, 40px) clamp(20px, 3vw, 35px);
+      border-radius: clamp(15px, 2.5vw, 25px);
       background: rgba(255,255,255,0.08);
       backdrop-filter: blur(25px);
       box-shadow: 0 0 30px rgba(75,123,236,0.5);
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
+    
+    .input-section {
+      flex-shrink: 0;
+      margin-bottom: clamp(10px, 2vh, 15px);
+    }
+    
     input, button {
       width: 100%;
-      padding: 14px;
-      margin-bottom: 15px;
+      padding: clamp(12px, 2.5vh, 16px);
+      margin-bottom: clamp(10px, 2vh, 15px);
       border: none;
-      border-radius: 12px;
-      font-size: 1rem;
+      border-radius: clamp(8px, 1.5vw, 12px);
+      font-size: clamp(0.9rem, 2.2vw, 1.1rem);
       background: rgba(255, 255, 255, 0.15);
       color: white;
+      transition: all 0.3s ease;
     }
-    input::placeholder { color: #ccc; }
+    
+    input {
+      min-height: 44px; /* Touch-friendly */
+    }
+    
+    input::placeholder { 
+      color: #ccc; 
+    }
+    
+    input:focus {
+      outline: 2px solid var(--highlight);
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
     button {
       background-color: var(--highlight);
       cursor: pointer;
       font-weight: bold;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    button:hover {
+    
+    button:hover, button:focus {
       background-color: #3867d6;
-      transform: scale(1.03);
+      transform: scale(1.02);
+      outline: none;
     }
+    
+    button:active {
+      transform: scale(0.98);
+    }
+    
     .response {
+      flex: 1;
       white-space: pre-wrap;
-      padding: 12px;
+      padding: clamp(12px, 2.5vw, 16px);
       background: rgba(255,255,255,0.1);
-      border-radius: 10px;
-      margin-top: 10px;
+      border-radius: clamp(8px, 1.5vw, 12px);
       border: 1px solid rgba(255,255,255,0.2);
+      overflow-y: auto;
+      overflow-x: hidden;
+      max-height: 45vh;
+      min-height: 120px;
+      text-align: left;
+      font-size: clamp(0.85rem, 2vw, 1rem);
+      line-height: 1.5;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.3) transparent;
     }
+    
+    .response::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .response::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+    }
+    
+    .response::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.3);
+      border-radius: 3px;
+    }
+    
+    .response::-webkit-scrollbar-thumb:hover {
+      background: rgba(255,255,255,0.5);
+    }
+    
     .audio-btn, .toggle-btn, .back-btn {
       position: fixed;
-      top: 15px;
+      top: clamp(10px, 2vh, 20px);
       background: rgba(255,255,255,0.15);
       color: white;
-      padding: 10px 15px;
+      padding: clamp(8px, 1.5vh, 12px) clamp(12px, 2.5vw, 18px);
       border-radius: 50px;
       cursor: pointer;
-      font-size: 1rem;
+      font-size: clamp(0.8rem, 2vw, 1rem);
       border: 1px solid rgba(255,255,255,0.3);
       backdrop-filter: blur(10px);
       z-index: 10;
+      transition: all 0.3s ease;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .audio-btn:hover, .toggle-btn:hover, .back-btn:hover {
+    
+    .audio-btn:hover, .toggle-btn:hover, .back-btn:hover,
+    .audio-btn:focus, .toggle-btn:focus, .back-btn:focus {
       background: rgba(255,255,255,0.25);
+      transform: scale(1.05);
+      outline: none;
     }
-    .audio-btn { left: 15px; }
-    .toggle-btn { right: 15px; }
+    
+    .audio-btn { left: clamp(10px, 2vw, 20px); }
+    .toggle-btn { right: clamp(10px, 2vw, 20px); }
     .back-btn {
-      top: 65px;
-      left: 15px;
+      top: clamp(55px, 8vh, 80px);
+      left: clamp(10px, 2vw, 20px);
       background: rgba(255,255,255,0.12);
     }
+    
     .history {
       position: fixed;
       top: 0;
       right: -100%;
-      width: 90%;
-      max-width: 320px;
-      height: 100%;
+      width: clamp(280px, 85vw, 350px);
+      height: 100vh;
       background: rgba(0,0,0,0.4);
       backdrop-filter: blur(10px);
-      padding: 20px;
+      padding: clamp(15px, 3vw, 25px);
       overflow-y: auto;
       box-shadow: -4px 0 10px rgba(0, 0, 0, 0.3);
       transition: right 0.4s ease;
       z-index: 9;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.3) transparent;
     }
-    .history.show { right: 0; }
-    .history h3 {
-      margin-bottom: 15px;
-      font-size: 1.3rem;
-      border-bottom: 1px solid rgba(255,255,255,0.2);
-      padding-bottom: 10px;
+    
+    .history::-webkit-scrollbar {
+      width: 6px;
     }
-    .history-item {
-      margin-bottom: 15px;
-      padding: 10px;
+    
+    .history::-webkit-scrollbar-track {
       background: rgba(255,255,255,0.1);
-      border-radius: 10px;
-      font-size: 0.9rem;
+      border-radius: 3px;
+    }
+    
+    .history::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.3);
+      border-radius: 3px;
+    }
+    
+    .history.show { right: 0; }
+    
+    .history h3 {
+      margin-bottom: clamp(10px, 2vh, 18px);
+      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      padding-bottom: clamp(8px, 1.5vh, 12px);
+      text-align: center;
+      margin-top: clamp(40px, 8vh, 60px);
+    }
+    
+    .history-item {
+      margin-bottom: clamp(12px, 2.5vh, 18px);
+      padding: clamp(10px, 2vw, 15px);
+      background: rgba(255,255,255,0.1);
+      border-radius: clamp(8px, 1.5vw, 12px);
+      font-size: clamp(0.8rem, 1.8vw, 0.95rem);
       border: 1px solid rgba(255,255,255,0.2);
+      line-height: 1.4;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    
+    .history-item strong {
+      color: #4b7bec;
+      display: block;
+      margin-bottom: 5px;
+    }
+    
+    /* Mobile specific adjustments */
+    @media (max-width: 600px) {
+      .container {
+        width: 95vw;
+        padding: clamp(15px, 3vw, 25px);
+        max-height: 80vh;
+      }
+      
+      .response {
+        max-height: 40vh;
+        min-height: 100px;
+      }
+      
+      .audio-btn, .toggle-btn, .back-btn {
+        font-size: clamp(0.75rem, 2.2vw, 0.9rem);
+        padding: clamp(6px, 1.2vh, 10px) clamp(10px, 2vw, 15px);
+      }
+      
+      .history {
+        width: 90vw;
+        padding: clamp(12px, 2.5vw, 20px);
+      }
+      
+      .history h3 {
+        margin-top: clamp(50px, 10vh, 70px);
+      }
+    }
+    
+    /* Tablet adjustments */
+    @media (min-width: 601px) and (max-width: 1024px) {
+      .container {
+        width: 85vw;
+        max-width: 480px;
+      }
+      
+      .response {
+        max-height: 50vh;
+      }
+    }
+    
+    /* Landscape orientation */
+    @media (orientation: landscape) and (max-height: 600px) {
+      .container {
+        max-height: 75vh;
+        padding: clamp(12px, 2vh, 20px);
+      }
+      
+      .response {
+        max-height: 35vh;
+        min-height: 80px;
+      }
+      
+      .audio-btn, .toggle-btn, .back-btn {
+        top: clamp(8px, 1.5vh, 15px);
+        padding: clamp(6px, 1vh, 10px) clamp(10px, 2vw, 15px);
+      }
+      
+      .back-btn {
+        top: clamp(40px, 6vh, 55px);
+      }
+      
+      .history h3 {
+        margin-top: clamp(30px, 5vh, 45px);
+      }
+    }
+    
+    /* Very small screens */
+    @media (max-width: 320px) {
+      .container {
+        width: 98vw;
+        padding: 12px;
+      }
+      
+      .response {
+        max-height: 35vh;
+        min-height: 80px;
+      }
+    }
+    
+    /* High DPI displays */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      .container {
+        box-shadow: 0 0 40px rgba(75,123,236,0.6);
+      }
+    }
+    
+    /* Accessibility improvements */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        transition: none !important;
+      }
+    }
+    
+    /* Focus styles for better accessibility */
+    .audio-btn:focus-visible, .toggle-btn:focus-visible, .back-btn:focus-visible {
+      outline: 2px solid #ffe600;
+      outline-offset: 2px;
+    }
+    
+    /* Loading state */
+    .loading {
+      color: #4b7bec;
+      font-style: italic;
+    }
+    
+    /* Ensure text doesn't break awkwardly */
+    .response {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
     }
   </style>
 </head>
@@ -132,18 +349,21 @@
     <source src="f1.mp3" type="audio/mpeg" />
   </audio>
 
-  <div class="audio-btn" onclick="toggleAudio()" id="audioBtn">🔊 Audio On</div>
-  <div class="back-btn" onclick="goBack()">🔙 वापस जाएं</div>
-  <div class="toggle-btn" onclick="toggleHistory()">📖</div>
+  <div class="audio-btn" onclick="toggleAudio()" id="audioBtn" tabindex="0">🔊 Audio On</div>
+  <div class="back-btn" onclick="goBack()" tabindex="0">🔙 वापस जाएं</div>
+  <div class="toggle-btn" onclick="toggleHistory()" tabindex="0">📖</div>
 
   <div class="container">
-    <input id="promptInput" type="text" placeholder="अपना प्रश्न पूछो..." />
-    <button onclick="askGemini()">🔮 अपनी बात श्रीकृष्ण तक पहुंचाएं...</button>
-    <div class="response" id="responseBox"></div>
+    <div class="input-section">
+      <input id="promptInput" type="text" placeholder="अपना प्रश्न पूछो..." onkeypress="handleEnterKey(event)" />
+      <button onclick="askGemini()">🔮 अपनी बात श्रीकृष्ण तक पहुंचाएं...</button>
+    </div>
+    <div class="response" id="responseBox">💫 शांति रखिए, भगवान श्रीकृष्ण आपको सुनने ही वाले हैं...</div>
   </div>
 
   <div class="history" id="historyPanel">
     <h3>📖 History</h3>
+    <div id="historyContent"></div>
   </div>
 
   <script>
@@ -152,6 +372,17 @@
     const audioBtn = document.getElementById("audioBtn");
     let hindiVoice = null;
     let isPlaying = localStorage.getItem("audioStatus") === "on";
+    let isProcessing = false;
+
+    // Handle viewport height for mobile browsers
+    function handleViewportChange() {
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+
+    window.addEventListener('resize', handleViewportChange);
+    window.addEventListener('orientationchange', handleViewportChange);
+    handleViewportChange();
 
     window.addEventListener("DOMContentLoaded", () => {
       if (isPlaying) {
@@ -162,14 +393,20 @@
           audioBtn.textContent = "🔊 Audio On";
         });
       }
+      
+      // Load history from localStorage
+      loadHistory();
     });
 
     function toggleAudio() {
       if (!isPlaying) {
-        music.play();
-        isPlaying = true;
-        localStorage.setItem("audioStatus", "on");
-        audioBtn.textContent = "🔇 Audio Off";
+        music.play().then(() => {
+          isPlaying = true;
+          localStorage.setItem("audioStatus", "on");
+          audioBtn.textContent = "🔇 Audio Off";
+        }).catch(() => {
+          console.log("Audio play failed");
+        });
       } else {
         music.pause();
         isPlaying = false;
@@ -183,7 +420,17 @@
     }
 
     function goBack() {
-      window.location.href = "index.html";  // या use window.history.back();
+      // Stop any ongoing speech synthesis
+      if ('speechSynthesis' in window) {
+        speechSynthesis.cancel();
+      }
+      window.location.href = "index.html";
+    }
+
+    function handleEnterKey(event) {
+      if (event.key === 'Enter' && !isProcessing) {
+        askGemini();
+      }
     }
 
     window.speechSynthesis.onvoiceschanged = () => {
@@ -191,44 +438,114 @@
       hindiVoice = voices.find(v => v.lang === "hi-IN");
     };
 
+    function saveHistory() {
+      const historyContent = document.getElementById("historyContent").innerHTML;
+      localStorage.setItem("krishnaHistory", historyContent);
+    }
+
+    function loadHistory() {
+      const savedHistory = localStorage.getItem("krishnaHistory");
+      if (savedHistory) {
+        document.getElementById("historyContent").innerHTML = savedHistory;
+      }
+    }
+
     async function askGemini() {
+      if (isProcessing) return;
+      
       const input = document.getElementById("promptInput").value.trim();
       const responseBox = document.getElementById("responseBox");
-      if (!input) return;
+      
+      if (!input) {
+        responseBox.textContent = "कृपया अपना प्रश्न लिखें...";
+        return;
+      }
 
-      responseBox.textContent = "📿 श्रीकृष्ण से संदेश आ रहा है...";
+      isProcessing = true;
+      responseBox.innerHTML = '<div class="loading">📿 श्रीकृष्ण से संदेश आ रहा है...</div>';
+      responseBox.scrollTop = 0;
 
       const prompt =
-        "You are lord Krishna. Answer my question using Bhagavad Gita as reference. Speak in simple Hindi as a letter. Question: " + input;
+        "You are lord Krishna. Answer my question using Bhagavad Gita as reference. Speak in simple Hindi as a letter. Limit your answer to 4-5 lines. Question: " + input;
 
-      const result = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+      try {
+        const result = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+          }
+        );
+
+        const data = await result.json();
+        const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || "❗उत्तर नहीं मिल पाया। कृपया पुनः प्रयास करें।";
+        
+        responseBox.textContent = reply;
+        responseBox.scrollTop = 0;
+
+        // Text-to-speech
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance(reply);
+          utterance.lang = "hi-IN";
+          utterance.voice = hindiVoice;
+          utterance.rate = 0.85;
+          utterance.pitch = 0.8;
+          utterance.volume = 1;
+          speechSynthesis.cancel();
+          speechSynthesis.speak(utterance);
         }
-      );
 
-      const data = await result.json();
-      const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || "❗उत्तर नहीं मिल पाया।";
-      responseBox.textContent = reply;
-
-      const utterance = new SpeechSynthesisUtterance(reply);
-      utterance.lang = "hi-IN";
-      utterance.voice = hindiVoice;
-      utterance.rate = 0.85;
-      utterance.pitch = 0.8;
-      utterance.volume = 1;
-      speechSynthesis.cancel();
-      speechSynthesis.speak(utterance);
-
-      const entry = document.createElement("div");
-      entry.className = "history-item";
-      entry.innerHTML = `<strong>Q:</strong> ${input}<br><strong>➤</strong> ${reply}`;
-      document.getElementById("historyPanel").appendChild(entry);
-      document.getElementById("promptInput").value = "";
+        // Add to history
+        const entry = document.createElement("div");
+        entry.className = "history-item";
+        entry.innerHTML = `<strong>प्रश्न:</strong> ${input}<br><strong>उत्तर:</strong> ${reply}`;
+        document.getElementById("historyContent").appendChild(entry);
+        
+        // Save history
+        saveHistory();
+        
+        // Clear input
+        document.getElementById("promptInput").value = "";
+        
+      } catch (error) {
+        console.error("Error:", error);
+        responseBox.textContent = "❗कुछ तकनीकी समस्या हुई है। कृपया पुनः प्रयास करें।";
+      } finally {
+        isProcessing = false;
+      }
     }
+
+    // Prevent zoom on double tap for iOS
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function (event) {
+      const now = (new Date()).getTime();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, false);
+
+    // Stop speech on page unload
+    window.addEventListener('beforeunload', function() {
+      if ('speechSynthesis' in window) {
+        speechSynthesis.cancel();
+      }
+    });
+
+    // Stop speech when page loses focus
+    window.addEventListener('blur', function() {
+      if ('speechSynthesis' in window) {
+        speechSynthesis.cancel();
+      }
+    });
+
+    // Add keyboard navigation
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        document.getElementById("historyPanel").classList.remove("show");
+      }
+    });
   </script>
 </body>
 </html>

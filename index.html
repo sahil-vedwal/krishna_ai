@@ -26,32 +26,36 @@
 
     .intro-text {
       position: absolute;
-      bottom: 0.5vh;
+      bottom: 2vh;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 1rem;
+      font-size: clamp(0.9rem, 1.5vw, 0.5rem);
       color: white;
       text-shadow: 0 0 10px #00f, 0 0 20px #00f;
       animation: fadeIn 2s ease-out;
       margin: 0;
       text-align: center;
+      padding: 0 1rem;
+      white-space: nowrap;
     }
 
     .overlay {
       position: absolute;
-      bottom: 5vh;
+      bottom: 8vh;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: clamp(8px, 2vh, 15px);
       z-index: 10;
+      width: 90%;
+      max-width: 400px;
     }
 
     button {
-      padding: 0.8rem 1.6rem;
-      font-size: 1rem;
+      padding: clamp(0.6rem, 2vh, 0.8rem) clamp(1.2rem, 4vw, 1.6rem);
+      font-size: clamp(0.85rem, 2.2vw, 1rem);
       border: none;
       border-radius: 25px;
       background: rgba(255, 255, 255, 0.1);
@@ -61,15 +65,26 @@
       box-shadow: 0 0 10px #00f;
       cursor: pointer;
       transition: all 0.3s ease;
+      width: 100%;
+      max-width: 200px;
+      min-height: 44px; /* Touch-friendly minimum */
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    button:hover {
+    button:hover, button:focus {
       background: rgba(255, 255, 255, 0.3);
       color: #ffe600;
+      outline: none;
+    }
+
+    button:active {
+      transform: scale(0.98);
     }
 
     #volumeSlider {
-      width: 140px;
+      width: clamp(120px, 30vw, 160px);
       appearance: none;
       height: 6px;
       background: linear-gradient(to right, #00f, #00f);
@@ -77,12 +92,13 @@
       outline: none;
       cursor: pointer;
       box-shadow: 0 0 8px #00f;
+      margin: 0.5rem 0;
     }
 
     #volumeSlider::-webkit-slider-thumb {
       appearance: none;
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
       background: #fff;
       border-radius: 50%;
       box-shadow: 0 0 10px #00f;
@@ -90,35 +106,159 @@
     }
 
     #volumeSlider::-moz-range-thumb {
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
       background: #fff;
       border-radius: 50%;
       box-shadow: 0 0 10px #00f;
       cursor: pointer;
+      border: none;
     }
 
     @keyframes fadeIn {
       from {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateX(-50%) translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
       }
     }
 
+    /* Extra small devices (phones, 600px and down) */
     @media (max-width: 600px) {
       .intro-text {
-        font-size: 1.2rem;
+        bottom: 3vh;
+        font-size: clamp(0.8rem, 3vw, 1rem);
+      }
+
+      .overlay {
         bottom: 10vh;
+        gap: clamp(10px, 2.5vh, 18px);
+      }
+
+      button {
+        font-size: clamp(0.8rem, 2.8vw, 0.9rem);
+        padding: clamp(0.7rem, 2.5vh, 0.8rem) clamp(1.4rem, 5vw, 1.8rem);
+        min-height: 48px;
+      }
+
+      #volumeSlider {
+        width: clamp(100px, 35vw, 140px);
+        height: 8px;
+      }
+
+      #volumeSlider::-webkit-slider-thumb {
+        width: 20px;
+        height: 20px;
+      }
+
+      #volumeSlider::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    /* Small devices (portrait tablets and large phones, 600px and up) */
+    @media (min-width: 601px) and (max-width: 768px) {
+      .intro-text {
+        bottom: 2.5vh;
+      }
+
+      .overlay {
+        bottom: 9vh;
+      }
+    }
+
+    /* Medium devices (landscape tablets, 768px and up) */
+    @media (min-width: 769px) and (max-width: 992px) {
+      .intro-text {
+        bottom: 2vh;
+      }
+
+      .overlay {
+        bottom: 8vh;
+      }
+    }
+
+    /* Large devices (laptops/desktops, 992px and up) */
+    @media (min-width: 993px) {
+      .intro-text {
+        bottom: 1.5vh;
       }
 
       .overlay {
         bottom: 7vh;
       }
+    }
+
+    /* Extra large devices (large laptops and desktops, 1200px and up) */
+    @media (min-width: 1200px) {
+      .intro-text {
+        bottom: 1vh;
+      }
+
+      .overlay {
+        bottom: 6vh;
+      }
+    }
+
+    /* Landscape orientation adjustments */
+    @media (orientation: landscape) and (max-height: 600px) {
+      .intro-text {
+        bottom: 5vh;
+        font-size: clamp(0.7rem, 2vh, 0.9rem);
+      }
+
+      .overlay {
+        bottom: 15vh;
+        gap: clamp(6px, 1.5vh, 12px);
+      }
 
       button {
-        font-size: 0.9rem;
-        padding: 0.6rem 1.2rem;
+        padding: clamp(0.4rem, 1.5vh, 0.6rem) clamp(1rem, 3vw, 1.4rem);
+        font-size: clamp(0.7rem, 2vh, 0.85rem);
+        min-height: 40px;
       }
+
+      #volumeSlider {
+        width: clamp(100px, 25vw, 130px);
+        height: 5px;
+      }
+    }
+
+    /* High DPI displays */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      button {
+        box-shadow: 0 0 15px #00f;
+      }
+
+      #volumeSlider {
+        box-shadow: 0 0 12px #00f;
+      }
+    }
+
+    /* Accessibility improvements */
+    @media (prefers-reduced-motion: reduce) {
+      .intro-text {
+        animation: none;
+      }
+
+      button {
+        transition: none;
+      }
+    }
+
+    /* Focus styles for keyboard navigation */
+    button:focus-visible {
+      outline: 2px solid #ffe600;
+      outline-offset: 2px;
+    }
+
+    #volumeSlider:focus-visible {
+      outline: 2px solid #ffe600;
+      outline-offset: 2px;
     }
   </style>
 </head>
@@ -136,7 +276,7 @@
 
   <div class="overlay">
     <button onclick="toggleAudio()" id="audioBtn">🔊 Audio On</button>
-    <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.7" onchange="adjustVolume(this.value)">
+    <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.7" onchange="adjustVolume(this.value)" aria-label="Volume Control">
     <button onclick="goToMain()">Tap to Continue</button>
   </div>
 
@@ -150,7 +290,10 @@
 
     function toggleAudio() {
       if (!isPlaying) {
-        music.play();
+        music.play().catch(e => {
+          console.log("Audio play failed:", e);
+          // Handle autoplay restrictions
+        });
         isPlaying = true;
         audioBtn.textContent = "🔇 Audio Off";
       } else {
@@ -171,6 +314,26 @@
       localStorage.setItem("audioStatus", isPlaying ? "on" : "off");
       window.location.href = "main.html";
     }
+
+    // Handle viewport changes for mobile browsers
+    function handleViewportChange() {
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+
+    window.addEventListener('resize', handleViewportChange);
+    window.addEventListener('orientationchange', handleViewportChange);
+    handleViewportChange();
+
+    // Prevent zoom on double tap for iOS
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function (event) {
+      const now = (new Date()).getTime();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, false);
   </script>
 </body>
 </html>
