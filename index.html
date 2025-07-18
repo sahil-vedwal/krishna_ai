@@ -24,43 +24,101 @@
       filter: brightness(0.7);
     }
 
+    .intro-text {
+      position: absolute;
+      bottom: 0.5vh;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1rem;
+      color: white;
+      text-shadow: 0 0 10px #00f, 0 0 20px #00f;
+      animation: fadeIn 2s ease-out;
+      margin: 0;
+      text-align: center;
+    }
+
     .overlay {
       position: absolute;
       bottom: 5vh;
-      right: 5vw;
+      left: 50%;
+      transform: translateX(-50%);
       display: flex;
       flex-direction: column;
-      align-items: flex-end;
-      gap: 15px;
+      align-items: center;
+      gap: 10px;
       z-index: 10;
     }
 
     button {
-      padding: 0.8rem 1.8rem;
-      font-size: 1.1rem;
+      padding: 0.8rem 1.6rem;
+      font-size: 1rem;
       border: none;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.15);
+      border-radius: 25px;
+      background: rgba(255, 255, 255, 0.1);
       color: white;
-      border: 1px solid rgba(255,255,255,0.3);
-      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 10px #00f;
       cursor: pointer;
-      transition: 0.3s;
+      transition: all 0.3s ease;
     }
 
     button:hover {
-      background: rgba(255,255,255,0.3);
+      background: rgba(255, 255, 255, 0.3);
       color: #ffe600;
     }
 
     #volumeSlider {
-      width: 120px;
+      width: 140px;
       appearance: none;
-      height: 5px;
-      background: white;
+      height: 6px;
+      background: linear-gradient(to right, #00f, #00f);
       border-radius: 5px;
       outline: none;
       cursor: pointer;
+      box-shadow: 0 0 8px #00f;
+    }
+
+    #volumeSlider::-webkit-slider-thumb {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #00f;
+      cursor: pointer;
+    }
+
+    #volumeSlider::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #00f;
+      cursor: pointer;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .intro-text {
+        font-size: 1.2rem;
+        bottom: 10vh;
+      }
+
+      .overlay {
+        bottom: 7vh;
+      }
+
+      button {
+        font-size: 0.9rem;
+        padding: 0.6rem 1.2rem;
+      }
     }
   </style>
 </head>
@@ -74,10 +132,12 @@
     <source src="f1.mp3" type="audio/mpeg" />
   </audio>
 
+  <div class="intro-text">Developed By Sahil :)</div>
+
   <div class="overlay">
-    <button onclick="toggleAudio()" id="audioBtn"> Audio On</button>
+    <button onclick="toggleAudio()" id="audioBtn">🔊 Audio On</button>
     <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.7" onchange="adjustVolume(this.value)">
-    <button onclick="goToMain()">Tap to Continue ➤</button>
+    <button onclick="goToMain()">Tap to Continue</button>
   </div>
 
   <script>
@@ -86,7 +146,6 @@
     const volumeSlider = document.getElementById("volumeSlider");
 
     music.volume = volumeSlider.value;
-
     let isPlaying = false;
 
     function toggleAudio() {
@@ -103,6 +162,9 @@
 
     function adjustVolume(val) {
       music.volume = val;
+      if (val > 0 && !isPlaying) {
+        toggleAudio();
+      }
     }
 
     function goToMain() {
