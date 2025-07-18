@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Krishna AI</title>
+  <style>
+    :root {
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.25);
+      --highlight: #4b7bec;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Times New Roman', serif;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      color: white;
+    }
+
+    video#bgVideo {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: -1;
+      filter: brightness(0.75);
+    }
+
+    .toggle-btn, .audio-btn {
+      position: fixed;
+      top: 15px;
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 1rem;
+      border: 1px solid rgba(255,255,255,0.3);
+      backdrop-filter: blur(10px);
+      transition: 0.3s;
+    }
+
+    .toggle-btn:hover, .audio-btn:hover {
+      background: rgba(255,255,255,0.25);
+    }
+
+    .toggle-btn { right: 15px; }
+    .audio-btn { left: 15px; }
+
+    #volumeSlider {
+      position: fixed;
+      top: 65px;
+      left: 15px;
+      width: 100px;
+      z-index: 10;
+      appearance: none;
+      height: 5px;
+      background: white;
+      border-radius: 5px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 500px;
+      padding: 35px 30px;
+      border-radius: 25px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--glass-border);
+      text-align: center;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    input::placeholder { color: #ccc; }
+
+    button {
+      background-color: var(--highlight);
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #3867d6;
+      transform: scale(1.03);
+    }
+
+    .response {
+      white-space: pre-wrap;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      margin-top: 10px;
+      color: white;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .history {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 90%;
+      max-width: 320px;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      overflow-y: auto;
+      box-shadow: -4px 0 10px rgba(0, 0, 0, 0.3);
+      transition: right 0.4s ease;
+      z-index: 9;
+    }
+
+    .history.show { right: 0; }
+
+    .history h3 {
+      margin-bottom: 15px;
+      font-size: 1.3rem;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      padding-bottom: 10px;
+    }
+
+    .history-item {
+      margin-bottom: 15px;
+      padding: 10px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      font-size: 0.9rem;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    @media screen and (max-width: 480px) {
+      .container {
+        padding: 20px 15px;
+        width: 95%;
+        top: 52%;
+      }
+      input, button {
+        font-size: 0.95rem;
+        padding: 12px;
+      }
+      .toggle-btn, .audio-btn {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+      }
+      #volumeSlider {
+        width: 80px;
+        top: 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <video autoplay muted playsinline loop id="bgVideo">
+    <source src="introbg2.mp4" type="video/mp4" />
+  </video>
+
+  <audio id="bgMusic" loop>
+    <source src="f1.mp3" type="audio/mpeg" />
+  </audio>
+
+  <div class="audio-btn" onclick="toggleAudio()" id="audioBtn">🔊 Audio On</div>
+  <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.7" onchange="adjustVolume(this.value)">
+  <div class="toggle-btn" onclick="toggleHistory()">📖</div>
+
+  <div class="container">
+    <input id="promptInput" type="text" placeholder="अपना प्रश्न पूछो..." />
+    <button onclick="askGemini()">🔮 श्रीकृष्ण का उत्तर सुनो</button>
+    <div class="response" id="responseBox"></div>
+  </div>
+
+  <div class="history" id="historyPanel">
+    <h3>📖 History</h3>
+  </div>
+
+  <script>
+    const API_KEY = "AIzaSyCI_lFxwcdfglDyYQpIthgYAWc3OAD4wwg"; 
+    const music = document.getElementById("bgMusic");
+    const audioBtn = document.getElementById("audioBtn");
+    const volumeSlider = document.getElementById("volumeSlider");
+
+    let hindiVoice = null;
+    let isPlaying = localStorage.getItem("audioStatus") === "on";
+
+    music.volume = volumeSlider.value;
+
+    window.addEventListener("DOMContentLoaded", () => {
+      if (isPlaying) {
+        music.play().then(() => {
+          audioBtn.textContent = "🔇 Audio Off";
+        }).catch(() => {
+          isPlaying = false;
+          audioBtn.textContent = "🔊 Audio On";
+        });
+      }
+    });
+
+    volumeSlider.addEventListener("input", (e) => {
+      music.volume = e.target.value;
+    });
+
+    window.speechSynthesis.onvoiceschanged = () => {
+      const voices = speechSynthesis.getVoices();
+      hindiVoice = voices.find(v => v.lang === "hi-IN");
+    };
+
+    function toggleAudio() {
+      if (!isPlaying) {
+        music.play();
+        isPlaying = true;
+        localStorage.setItem("audioStatus", "on");
+        audioBtn.textContent = "🔇 Audio Off";
+      } else {
+        music.pause();
+        isPlaying = false;
+        localStorage.setItem("audioStatus", "off");
+        audioBtn.textContent = "🔊 Audio On";
+      }
+    }
+
+    function toggleHistory() {
+      document.getElementById("historyPanel").classList.toggle("show");
+    }
+
+    async function askGemini() {
+      const input = document.getElementById("promptInput").value.trim();
+      const responseBox = document.getElementById("responseBox");
+      if (!input) return;
+
+      responseBox.textContent = "🔄 श्रीकृष्ण उत्तर दे रहे हैं...";
+
+      const prompt =
+        "You are lord Krishna. I will ask you something which you have to answer with the reference of bhagwad gita. Respond in the form of letter. Use simple hindi for responses. Do not use anything else, just clean response. My question is: " + input;
+
+      const result = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+        }
+      );
+
+      const data = await result.json();
+      const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || "❗उत्तर नहीं मिल पाया।";
+      responseBox.textContent = reply;
+
+      const utterance = new SpeechSynthesisUtterance(reply);
+      utterance.lang = "hi-IN";
+      utterance.voice = hindiVoice;
+      utterance.rate = 0.85;
+      utterance.pitch = 0.8;
+      utterance.volume = 1;
+
+      speechSynthesis.cancel();
+      speechSynthesis.speak(utterance);
+      
+      const entry = document.createElement("div");
+      entry.className = "history-item";
+      entry.innerHTML = `<strong>Q:</strong> ${input}<br><strong>➤</strong> ${reply}`;
+      document.getElementById("historyPanel").appendChild(entry);
+      document.getElementById("promptInput").value = "";
+    }
+  </script>
+</body>
+</html>

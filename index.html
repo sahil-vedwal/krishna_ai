@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Krishna AI</title>
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Times New Roman', serif;
+    }
+
+    video {
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: -1;
+      filter: brightness(0.7);
+    }
+
+    .overlay {
+      position: absolute;
+      bottom: 5vh;
+      right: 5vw;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 15px;
+      z-index: 10;
+    }
+
+    button {
+      padding: 0.8rem 1.8rem;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.15);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.3);
+      backdrop-filter: blur(8px);
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: rgba(255,255,255,0.3);
+      color: #ffe600;
+    }
+
+    #volumeSlider {
+      width: 120px;
+      appearance: none;
+      height: 5px;
+      background: white;
+      border-radius: 5px;
+      outline: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <video autoplay muted loop id="introVideo">
+    <source src="intro.mp4" type="video/mp4" />
+  </video>
+
+  <audio id="bgMusic" loop>
+    <source src="f1.mp3" type="audio/mpeg" />
+  </audio>
+
+  <div class="overlay">
+    <button onclick="toggleAudio()" id="audioBtn">🔊 Audio On</button>
+    <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.7" onchange="adjustVolume(this.value)">
+    <button onclick="goToMain()">✨ Tap to Continue ➤</button>
+  </div>
+
+  <script>
+    const music = document.getElementById("bgMusic");
+    const audioBtn = document.getElementById("audioBtn");
+    const volumeSlider = document.getElementById("volumeSlider");
+
+    music.volume = volumeSlider.value;
+
+    let isPlaying = false;
+
+    function toggleAudio() {
+      if (!isPlaying) {
+        music.play();
+        isPlaying = true;
+        audioBtn.textContent = "🔇 Audio Off";
+      } else {
+        music.pause();
+        isPlaying = false;
+        audioBtn.textContent = "🔊 Audio On";
+      }
+    }
+
+    function adjustVolume(val) {
+      music.volume = val;
+    }
+
+    function goToMain() {
+      localStorage.setItem("audioStatus", isPlaying ? "on" : "off");
+      window.location.href = "main.html";
+    }
+  </script>
+</body>
+</html>
